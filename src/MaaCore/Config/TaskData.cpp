@@ -536,8 +536,9 @@ asst::TaskData::taskptr_t asst::TaskData::_default_task_info()
 // task_name 是任务名
 // task_changed 记录 raw_tasks 在转换为 new_tasks 时是否发生变化
 // allow_duplicate 是否允许重复
+// allow_empty 是否允许空任务
 bool asst::TaskData::compile_tasklist(tasklist_t& new_tasks, const tasklist_t& raw_tasks, std::string_view task_name,
-                                      bool& task_changed, bool allow_duplicate)
+                                      bool& task_changed, bool allow_duplicate, bool allow_empty)
 {
     std::unordered_set<std::string_view> tasks_set; // 记录任务列表中已有的任务（内容元素与 new_tasks 基本一致）
 
@@ -685,7 +686,7 @@ bool asst::TaskData::compile_tasklist(tasklist_t& new_tasks, const tasklist_t& r
                     }
                     if (type == "back") {
                         // "A#back" === "A", "B@A#back" === "B@A", "#back" === null
-                        if (!task.empty()) ret->emplace_back(task);
+                        ret->emplace_back(task);
                         continue;
                     }
                     taskptr_t other_task_info_ptr = task.empty() ? default_task_info_ptr : get_raw(task);
@@ -694,7 +695,7 @@ bool asst::TaskData::compile_tasklist(tasklist_t& new_tasks, const tasklist_t& r
     else if (type == #t)                                                                                              \
     {                                                                                                                 \
         bool task_changed = false;                                                                                    \
-        if (!compile_tasklist(*ret, other_task_info_ptr->t, task_name, task_changed, m)) {                            \
+        if (!compile_tasklist(*ret, other_task_info_ptr->t, task_name, task_changed, m, true)) {                      \
             Log.error("Failed to compile task", task + "->" #t, "while perform op", symbl_table[op], "in", task_expr, \
                       "of task:", task_name);                                                                         \
             return std::nullopt;                                                                                      \
@@ -907,7 +908,7 @@ bool asst::TaskData::compile_tasklist(tasklist_t& new_tasks, const tasklist_t& r
         }
 
         for (const auto& task : **opt) {
-            if (task.empty() || (!allow_duplicate && tasks_set.contains(task))) {
+            if ((!allow_empty && task.empty()) || (!allow_duplicate && tasks_set.contains(task))) {
                 task_changed = true;
                 continue;
             }

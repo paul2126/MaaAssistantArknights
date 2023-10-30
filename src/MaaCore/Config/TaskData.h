@@ -139,7 +139,7 @@ namespace asst
             return m_all_tasks_info.insert_or_assign(task_name_view(task_name), task_info_ptr);
         }
         bool compile_tasklist(tasklist_t& new_tasks, const tasklist_t& raw_tasks, std::string_view name,
-                              bool& task_changed, bool multi);
+                              bool& task_changed, bool allow_duplicate, bool allow_empty = false);
         bool generate_task_and_its_base(std::string_view name, bool must_true);
 #ifdef ASST_DEBUG
         bool syntax_check(std::string_view task_name, const json::value& task_json);
