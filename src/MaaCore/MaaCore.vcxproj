@@ -49,6 +49,9 @@
     <ClInclude Include="Config\Miscellaneous\SSSCopilotConfig.h" />
     <ClInclude Include="Config\OnnxSessions.h" />
     <ClInclude Include="Config\Roguelike\RoguelikeFoldartalConfig.h" />
+    <ClInclude Include="Config\TaskData\TaskDataSymbol.h" />
+    <ClInclude Include="Config\TaskData\TaskDataSymbolStream.h" />
+    <ClInclude Include="Config\TaskData\TaskDataTypes.hpp" />
     <ClInclude Include="Controller\adb-lite\client.hpp" />
     <ClInclude Include="Controller\adb-lite\protocol.hpp" />
     <ClInclude Include="Controller\Controller.h" />
@@ -56,7 +59,9 @@
     <ClInclude Include="Controller\ControllerFactory.h" />
     <ClInclude Include="Controller\ControlScaleProxy.h" />
     <ClCompile Include="Config\Roguelike\RoguelikeFoldartalConfig.cpp" />
-    <ClCompile Include="Controller\MaaThriftController.h" />
+    <ClCompile Include="Config\TaskData\TaskDataSymbol.cpp" />
+    <ClCompile Include="Config\TaskData\TaskDataSymbolStream.cpp" />
+    <ClInclude Include="Controller\MaaThriftController.h" />
     <ClInclude Include="Controller\MaatouchController.h" />
     <ClInclude Include="Controller\MinitouchController.h" />
     <ClInclude Include="Controller\PlayToolsController.h" />
