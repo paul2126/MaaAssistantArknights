@@ -224,7 +224,7 @@ asst::TaskDataSymbolStream::SymbolsOrError asst::TaskDataSymbolStream::decode(Ap
                     auto opt = append_prefix(sy, sx);
                     if (!opt) {
                         return { std::nullopt,
-                                 "decode_vtasks: failed while " + sx.name() + " @ " + sy.name() + ", " + opt.what() };
+                                 "decode_vtasks: failed while " + sx.name() + " @ " + sy.name() + ", " + opt.error() };
                     }
                     ranges::copy(*opt, std::back_inserter(x));
                 }
