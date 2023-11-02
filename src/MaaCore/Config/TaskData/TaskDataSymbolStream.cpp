@@ -1,5 +1,3 @@
-#include <format>
-
 #include "TaskDataSymbolStream.h"
 
 asst::ResultOrError<bool> asst::TaskDataSymbolStream::parse(std::string_view task_expr)
@@ -61,8 +59,8 @@ asst::ResultOrError<bool> asst::TaskDataSymbolStream::parse(std::string_view tas
             auto symbol = TaskDataSymbol::type(std::string_view { std::addressof(*p), 1 });
             if (symbol == TaskDataSymbol::Name) [[unlikely]] {
                 // should not happen
-                return { std::nullopt, std::format("Error when decode symbol {} at {} in {}", *p,
-                                                   p - task_expr.cbegin(), task_expr) };
+                return { std::nullopt, std::string("Error when decode symbol ") + *p + " at " +
+                                           std::to_string(p - task_expr.cbegin()) + " in " += task_expr };
             }
             m_symbolstream.emplace_back(symbol);
             break;
@@ -123,7 +121,7 @@ asst::TaskDataSymbolStream::SymbolsOrError asst::TaskDataSymbolStream::decode(Ap
         if (cur->is_name() || cur->is_sharp_type()) {
             return Symbols { *(cur++) };
         }
-        return { std::nullopt, std::format("expect name or sharp type, got {}", cur->repr()) };
+        return { std::nullopt, "expect name or sharp type, got " + cur->name() };
     };
     decode_tasks = [&]() -> SymbolsOrError {
         Symbols x = {}, y = {};
@@ -225,8 +223,8 @@ asst::TaskDataSymbolStream::SymbolsOrError asst::TaskDataSymbolStream::decode(Ap
                 for (const auto& sy : y) {
                     auto opt = append_prefix(sy, sx);
                     if (!opt) {
-                        return { std::nullopt, std::format("decode_vtasks: failed while {} @ {}, {}", sx.name(),
-                                                           sy.name(), opt.what()) };
+                        return { std::nullopt,
+                                 "decode_vtasks: failed while " + sx.name() + " @ " + sy.name() + ", " + opt.what() };
                     }
                     ranges::copy(*opt, std::back_inserter(x));
                 }
@@ -245,7 +243,7 @@ asst::TaskDataSymbolStream::SymbolsOrError asst::TaskDataSymbolStream::decode(Ap
                 x = *opt;
             }
             if (*cur != Symbol::RParen) [[unlikely]] {
-                return { std::nullopt, std::format("decode_parens: expected ')' but got {}", cur->name()) };
+                return { std::nullopt, "decode_parens: expected ')', got " + cur->name() };
             }
             ++cur;
             return x;
@@ -253,7 +251,7 @@ asst::TaskDataSymbolStream::SymbolsOrError asst::TaskDataSymbolStream::decode(Ap
         if (cur->is_name() || cur->is_sharp_type()) {
             return decode_name_or_vtask();
         }
-        return { std::nullopt, std::format("decode_parens: invalid symbol {}", cur->name()) };
+        return { std::nullopt, "decode_parens: unexpected symbol " + cur->name() };
     };
 
     auto opt = decode_tasks();
@@ -261,7 +259,7 @@ asst::TaskDataSymbolStream::SymbolsOrError asst::TaskDataSymbolStream::decode(Ap
         return opt;
     }
     if (cur != m_symbolstream.cend() && *cur != TaskDataSymbol::End) {
-        return { std::nullopt, std::format("decode: did not reach end, got {}", cur->name()) };
+        return { std::nullopt, "decode: did not reach end, got " + cur->name() };
     }
 
     return opt;

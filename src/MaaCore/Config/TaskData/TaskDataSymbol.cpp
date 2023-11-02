@@ -15,7 +15,7 @@ asst::TaskDataSymbol::SymbolsOrError asst::TaskDataSymbol::append_prefix(
         prefix_name = prefix.name();
     }
     else [[unlikely]] {
-        return { std::nullopt, std::format("prefix {} is not name or self", prefix.repr()) };
+        return { std::nullopt, "prefix " + prefix.name() + " is not name or self" };
     }
     if (prefix_name.empty()) {
         return std::vector { symbol };
@@ -30,7 +30,7 @@ asst::TaskDataSymbol::SymbolsOrError asst::TaskDataSymbol::append_prefix(
         if (symbol.name().empty()) {
             return { std::nullopt, "name is empty" };
         }
-        return std::vector { TaskDataSymbol(std::string(prefix_name) + '@' + std::string(symbol.name())) };
+        return std::vector { TaskDataSymbol(std::string(prefix_name) + '@' + symbol.name()) };
     }
     if (symbol == SharpBack) {
         return std::vector { TaskDataSymbol(prefix_name) };

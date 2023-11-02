@@ -64,7 +64,7 @@ namespace asst
             { "none", SharpNone },
             { "__name__", Name },
         };
-        static const inline std::unordered_map<Type, std::string_view> symbol_type_to_repr = {
+        static const inline std::unordered_map<Type, std::string> symbol_type_to_repr = {
             { End, "__END__" },
             { LambdaTaskSep, "," },
             { LParen, "(" },
@@ -111,7 +111,7 @@ namespace asst
             };
             return sharp_types.contains(type);
         }
-        static std::string_view repr(Type type)
+        static const std::string& repr(Type type)
         {
             const auto pos = symbol_type_to_repr.find(type);
             return pos == symbol_type_to_repr.end() ? symbol_type_to_repr.at(Name) : pos->second;
@@ -130,7 +130,7 @@ namespace asst
         bool is_name() const noexcept { return m_symbol == Name; }
         bool is_sharp_type() const noexcept { return is_sharp_type(m_symbol); }
         Type type() const noexcept { return m_symbol; }
-        std::string_view repr() const noexcept { return repr(m_symbol); }
-        std::string_view name() const noexcept { return is_name() ? m_name : repr(); }
+        // const std::string& repr() const& noexcept { return repr(m_symbol); }
+        const std::string& name() const& noexcept { return is_name() ? m_name : repr(m_symbol); }
     };
 } // namespace asst
